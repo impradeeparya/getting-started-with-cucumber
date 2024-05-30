@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>demo.cucumber</groupId>
+        <artifactId>getting-started-with-cucumber</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <groupId>bdd.test</groupId>
+    <artifactId>bdd-test</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>bdd-test</name>
+    <description>bdd-test</description>
+
+    <properties>
+        <cucumber.version>7.5.0</cucumber.version>
+        <surefire.version>3.0.0-M5</surefire.version>
+        <net.masterthought.version>4.4.0</net.masterthought.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>bdd.service</groupId>
+            <artifactId>bdd-service</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>cucumber-spring</artifactId>
+            <version>${cucumber.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>cucumber-junit</artifactId>
+            <version>${cucumber.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>cucumber-java</artifactId>
+            <version>${cucumber.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-contract-wiremock</artifactId>
+            <version>1.2.2.RELEASE</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.tomakehurst</groupId>
+            <artifactId>wiremock-jre8</artifactId>
+            <version>2.22.0</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mock-server</groupId>
+            <artifactId>mockserver-netty</artifactId>
+            <version>5.14.0</version>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <plugins>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${surefire.version}</version>
+                <configuration>
+                    <properties>
+                        <configurationParameters>
+                            cucumber.junit-platform.naming-strategy=long
+                        </configurationParameters>
+                        <includes>
+                            <include>**/*Test*</include>
+                        </includes>
+                    </properties>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>net.masterthought</groupId>
+                <artifactId>maven-cucumber-reporting</artifactId>
+                <version>${net.masterthought.version}</version>
+                <configuration>
+                    <skip>${skipTests}</skip>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>execution</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <projectName>${project.name}</projectName>
+                            <outputDirectory>${cucumber.reports.dir}</outputDirectory>
+                            <inputDirectory>${project.build.directory}/site/</inputDirectory>
+                            <buildNumber>${project.version}</buildNumber>
+                            <jsonFiles>cucumber.json</jsonFiles>
+                            <checkBuildResult>true</checkBuildResult>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-site-plugin</artifactId>
+                <version>3.3</version>
+            </plugin>
+
+        </plugins>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-release-plugin</artifactId>
+                    <version>${maven-release-plugin.version}</version>
+                    <configuration>
+                        <tagNameFormat>${project.artifactId}-@{project.version}</tagNameFormat>
+                        <localCheckout>true</localCheckout>
+                        <autoVersionSubmodules>true</autoVersionSubmodules>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.4.1</version>
+                <reportSets>
+                    <reportSet>
+                        <id>aggregate</id>
+                        <reports>
+                            <report>aggregate</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+                <configuration>
+                    <!-- Here you can add special configurations for your javadoc, if needed -->
+                </configuration>
+            </plugin>
+        </plugins>
+    </reporting>
+
+</project>
